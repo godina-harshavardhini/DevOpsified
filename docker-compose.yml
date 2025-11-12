@@ -1,0 +1,33 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: devopsified-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: devopsified-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/devopsified
+      - PORT=8080
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./frontend
+    container_name: devopsified-frontend
+    restart: always
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
